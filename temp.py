@@ -30,7 +30,9 @@ def DessineQR(qr_code: list,taille : int = 10 )-> None:
         for j in range(len(qr_code[0])):
             if qr_code[i][j]:
                 image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'black')
-        
+            else:
+                image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'white')
+                
     img.show()
     img.save('test.png')
 
@@ -58,6 +60,38 @@ def FixedPatterns(qr_code):
             qr_code[2+i][2+j] = 1
             qr_code[-5+i][2+j] = 1
             qr_code[2+i][-5+j] = 1
+    for i in range(8,17,2):
+        qr_code[i][6] = 1
+        qr_code[6][i] = 1
+    qr_code[17][8] = 1
+    for i in range(16,21):
+        qr_code[16][i] = 1
+        qr_code[20][i] = 1
+        qr_code[i][16] = 1
+        qr_code[i][20] = 1
+    qr_code[18][18] = 1
+    format_line = '010011011100001'
+    line = 0
+    for k in range(len(format_line)):
+        
+        if line <= 8:  
+            if qr_code[line][8] == 1:
+                line += 1
+            qr_code[line][8] = int(format_line[k])
+        if line > 8:
+            if qr_code[8][16-line] == 1:
+                line += 1
+            qr_code[8][16-line] = int(format_line[k])
+        line += 1
+    line = 1
+    for k in range(len(format_line)):
+        if line <= 8:
+            qr_code[8][-line] = int(format_line[k])
+        if line > 8:
+            qr_code[-(16-line)][8] = int(format_line[k])
+        line += 1
+        
+        
     
     return qr_code
 
