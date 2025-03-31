@@ -1,0 +1,11 @@
+def chiffrebinaire(num):
+    binaire = str(bin(num))[3:]
+    for i in range(8-len(binaire)):
+        binaire = '0' + binaire
+    return binaire
+
+def lettrebinaire(lettre):
+    binaire = str(bin(ord(lettre)))[2:]
+    for i in range(8-len(binaire)):
+        binaire = '0' + binaire
+    return binaire
