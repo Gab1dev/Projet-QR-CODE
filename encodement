@@ -1,0 +1,11 @@
+def encodement(code):
+    binaire = "0100"
+    for i in code : 
+        binaire = binaire + lettrebinaire(i)
+    binaire = binaire + "0000"
+    liste = ["11101100", "00010001"]
+    while len(binaire)<272:
+        binaire = binaire +liste[0]
+        liste[0], liste[1] = liste[1], liste[0]
+        
+    return binaire
