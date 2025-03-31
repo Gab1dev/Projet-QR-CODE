@@ -21,7 +21,7 @@ def DessineQR(qr_code: list,taille : int = 10 )-> None:
     None.
 
     '''
-    img_taille = taille*21
+    img_taille = taille*25
     img = Image.new('RGB',(img_taille,img_taille), color="white")
     image = ImageDraw.Draw(img)
     
@@ -34,7 +34,7 @@ def DessineQR(qr_code: list,taille : int = 10 )-> None:
     img.show()
     img.save('test.png')
 
-QR_Code = [[0 for i in range(21)]for i in range(21)]
+QR_Code = [[0 for i in range(25)]for i in range(25)]
 
 
 
