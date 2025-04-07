@@ -7,7 +7,7 @@ This is a temporary script file.
 
 from PIL import Image, ImageDraw
 
-def DessineQR(qr_code: list,taille : int = 10 )-> None: 
+def dessineQR(qr_code: list,taille : int = 10 )-> None: 
     '''
     Parameters
     ----------
@@ -40,7 +40,7 @@ QR_Code = [[0 for i in range(25)]for i in range(25)]
 
 
 
-def FixedPatterns(qr_code):
+def patternFixe(qr_code):
     
     for i in range(7):
         qr_code[0][i] = 1
