@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
-
-from PIL import Image, ImageDraw
-
 def dessineQR(qr_code: list,taille : int = 10 )-> None: 
     '''
     Parameters
@@ -95,13 +86,55 @@ def patternFixe(qr_code):
     
     return qr_code
 
-QR_Code = FixedPatterns(QR_Code)    
-DessineQR(QR_Code,10)
+QR_Code = patternFixe(QR_Code)
 
+
+def placeBits(qr_code,message):
+    counter = 0
+    for k in range(4):
+        
+        for i in range(4):
+            for j in range(2):
+                qr_code[24-i-(4*k)][24-j] = int(message[counter])
+                counter+=1
+    for k in range(4):
+        for i in range(4):
+            for j in range(2):
+                qr_code[9+i+k*4][22-j] = int(message[counter])
+                counter += 1
+    for i in range(4):
+        for j in range(2):
+            qr_code[24-i][20-j] = int(message[counter])
+            counter+=1
+    for i in range(4):
+        for j in range(2):
+            qr_code[24-i-9][20-j] = int(message[counter])
+            counter+=1
+    return qr_code
+
+
+def encodement(code):
+    def lettrebinaire(lettre):
+        binaire = str(bin(ord(lettre)))[2:]
+        for i in range(8-len(binaire)):
+            binaire = '0' + binaire
+        return binaire
+    binaire = "0100"
+    for i in code : 
+        binaire = binaire + lettrebinaire(i)
+    binaire = binaire + "0000"
+    liste = ["11101100", "00010001"]
+    while len(binaire)<272:
+        binaire = binaire +liste[0]
+        liste[0], liste[1] = liste[1], liste[0]
+    print(binaire)
+    return binaire
+
+QR_Code = placeBits(QR_Code,encodement("bonjour"))
+dessineQR(QR_Code,10)                
 # Fonction dessin : Ok
 # Fonction Message en binaire : Ok
 # Fonction Correction d'erreur : X
 # Fonction Patterne Fixe : Ok
 # Fonction Plaçage des bits : X
 # Fonction Masque : X
-#https://nimelli.github.io/python/2022/DIY-QR-code-Reader-V2.html
