@@ -104,3 +104,4 @@ DessineQR(QR_Code,10)
 # Fonction Patterne Fixe : Ok
 # Fonction Plaçage des bits : X
 # Fonction Masque : X
+#https://nimelli.github.io/python/2022/DIY-QR-code-Reader-V2.html
