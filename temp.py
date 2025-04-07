@@ -97,3 +97,10 @@ def patternFixe(qr_code):
 
 QR_Code = FixedPatterns(QR_Code)    
 DessineQR(QR_Code,10)
+
+# Fonction dessin : Ok
+# Fonction Message en binaire : Ok
+# Fonction Correction d'erreur : X
+# Fonction Patterne Fixe : Ok
+# Fonction Plaçage des bits : X
+# Fonction Masque : X
