@@ -1,3 +1,6 @@
+
+from PIL import Image, ImageDraw
+
 def dessineQR(qr_code: list,taille : int = 10 )-> None: 
     '''
     Parameters
