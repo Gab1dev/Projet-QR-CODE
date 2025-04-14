@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
@@ -139,7 +140,7 @@ def placeBits(qr_code,message):
                 colonne = col + i
                 ligne = row
                 if 0 <= colonne < 25 and 0 <= ligne < 25 and qr_code[ligne][colonne] is None:
-                    if (ligne+1)%2 == 0:
+                    if (ligne)%2 == 0:
                         qr_code[ligne][colonne] = int(message[index])-1
                         qr_code[ligne][colonne] = -qr_code[ligne][colonne]
                     else:
@@ -160,6 +161,10 @@ def encodement(code):
             binaire = '0' + binaire
         return binaire
     binaire = "0100"
+    longueur = bin(len(code))[2:]
+    for i in range(8-len(longueur)):
+        longueur = '0' + longueur
+    binaire = binaire + longueur
     for i in code : 
         binaire = binaire + lettrebinaire(i)
     binaire = binaire + "0000"
@@ -172,12 +177,12 @@ def encodement(code):
 def genereCorrectionErreur(data_bits):
     data_bytes = [int(data_bits[i:i+8],2) for i in range(0,len(data_bits),8)]
 
-    rs = reedsolo.RSCodec(7)
+    rs = reedsolo.RSCodec(10)
     
     data_encode = rs.encode(bytes(data_bytes))
 
-    ec_bits = ''.join(f'{byte:08b}' for byte in data_encode[-7:])
-
+    ec_bits = ''.join(f'{byte:08b}' for byte in data_encode[-10:])
+    print(len(ec_bits))
     return ec_bits
 
 
@@ -198,7 +203,7 @@ def placeCorrectionErreurBits(qr_code,data_bits):
 
                 if 0 <= colonne < 25 and 0 <= ligne < 25 and qr_code[ligne][colonne] is None:
                    
-                    if (ligne+1)%2 == 0:
+                    if (ligne)%2 == 0:
                         qr_code[ligne][colonne] = int(ec_bits[index])-1
                         qr_code[ligne][colonne] = -qr_code[ligne][colonne]
                     else:
