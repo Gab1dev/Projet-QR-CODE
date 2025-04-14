@@ -224,9 +224,4 @@ placeBits(QR_Code,encodement("bonjour"))
 placeCorrectionErreurBits(QR_Code,encodement("bonjour"))
 
 dessineQR(QR_Code,10)                
-# Fonction dessin : Ok
-# Fonction Message en binaire : Ok
-# Fonction Correction d'erreur : X
-# Fonction Patterne Fixe : Ok
-# Fonction Plaçage des bits : Ok
-# Fonction Masque : X
+# Problemes : Correction Erreur et Ligne de format.
