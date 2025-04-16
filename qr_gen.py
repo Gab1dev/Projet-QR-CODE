@@ -124,39 +124,10 @@ def genereCorrectionErreur(data_bits):
     return ec_bits
 
 
-
-
-def placeCorrectionErreurBits(qr_code,data_bits):
-    ec_bits = genereCorrectionErreur(data_bits)
-    size = 25
-    index = 0
-    direction = -1
-    row = 24
-    col = 0
-    while col < 25:
-        while 0 <= row < size:
-            for i in [0,1]:
-                colonne = col + i
-                ligne = row
-
-                if 0 <= colonne < 25 and 0 <= ligne < 25 and qr_code[ligne][colonne] is None:
-                   
-                    if (ligne)%2 == 0:
-                        qr_code[ligne][colonne] = int(ec_bits[index])-1
-                        qr_code[ligne][colonne] = -qr_code[ligne][colonne]
-                    else:
-                        qr_code[ligne][colonne] = int(ec_bits[index])
-                    index += 1
-                    if index == len(ec_bits):
-                        return
-            row += direction
-        direction *= -1
-        row += direction
-        col += 2
         
     
 
 
 placeBits(QR_Code,encodement("bonjour"))
 
-placeCorrectionErreurBits(QR_Code,encodement("bonjour"))
+placeBits(QR_Code,genereCorrectionErreur(encodement("bonjour")))
