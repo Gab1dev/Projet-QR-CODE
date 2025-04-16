@@ -1,66 +1,56 @@
-def bits_de_correction(liste):
-    """ Fonction qui renvoie les 3 bits de contrôle d'une liste de 4 bits"""
+import numpy as np
 
-    m1 = liste[0]
-    m2 = liste[1]
-    m3 = liste[2]
-    m4 = liste[3]
+# Galois Field (GF) operations
+def gf_mult(x, y, p=0x11d):
+    """Multiplie deux éléments dans GF(2^8)"""
+    result = 0
+    while y > 0:
+        if y & 1:
+            result ^= x
+        x <<= 1
+        if x & 0x100:
+            x ^= p
+        y >>= 1
+    return result
 
-    c1 = m1 ^ m2 ^ m4
-    c2 = m1 ^ m3 ^ m4
-    c3 = m2 ^ m3 ^ m4 
+def gf_pow(x, exp, p=0x11d):
+    """Élève un élément à une puissance dans GF(2^8)"""
+    result = 1
+    for _ in range(exp):
+        result = gf_mult(result, x, p)
+    return result
 
-    return [c1, c2, c3]
+# Reed-Solomon Encoder
+def reed_solomon_encode(data, n, k):
+    """Encode les données avec Reed-Solomon"""
+    # Coefficients du polynôme générateur
+    generator = [1]
+    for i in range(n - k):
+        generator = np.convolve(generator, [1, gf_pow(2, i)])
+    
+    # Ajout de zéros pour le polynôme de données
+    data_poly = np.array(data + [0] * (n - k))
+    
+    # Division polynomiale
+    remainder = np.polydiv(data_poly, generator)[1]
+    
+    # Ajout des symboles de redondance
+    return data + remainder.astype(int).tolist()
 
+# Reed-Solomon Decoder
+def reed_solomon_decode(encoded_data, n, k):
+    """Décode les données avec Reed-Solomon"""
+    # Pour simplifier, nous ne corrigeons pas les erreurs ici
+    return encoded_data[:k]
 
-def correction_erreurs(matrice):
-    """ Prend une liste de 7 bits et la corrige s'il y a une erreur"""
+# Exemple d'utilisation
+if __name__ == "__main__":
+    data = [1, 2, 3, 4]  # Données à encoder
+    n = 7  # Longueur totale du code
+    k = 4  # Longueur des données
 
-    matrice_corrigee = []
+    encoded_data = reed_solomon_encode(data, n, k)
+    print("Données encodées :", encoded_data)
 
-    for liste in matrice:
-        
-        m1 = liste[0]
-        m2 = liste[1]
-        m3 = liste[2]
-        m4 = liste[3]
-
-        c1 = liste[4]
-        c2 = liste[5]
-        c3 = liste[6]
-
-        erreurs = [0, 0, 0]           # liste qui contient les erreurs des bits de contrôle (1 => erreur)
-
-        controle = bits_de_correction([m1, m2, m3, m4])
-
-        if controle[0] != c1:
-            erreurs[0] = 1
-        if controle[1] != c2:
-            erreurs[1] = 1
-        if controle[2] != c3:
-            erreurs[2] = 1
-
-        if (erreurs[0] == 1) and (erreurs[1] == 1) and (erreurs[2] == 1):
-            if m4 == 0:
-                m4 = 1
-            else:
-                m4 = 0
-        elif (erreurs[0] == 1) and (erreurs[1] == 1):
-            if m1 == 0:
-                m1 = 1
-            else:
-                m1 = 0
-        elif (erreurs[0] == 1) and (erreurs[2] == 1):
-            if m2 == 0:
-                m2 = 1
-            else:
-                m2 = 0
-        elif (erreurs[1] == 1) and (erreurs[2] == 1):
-            if m3 == 0:
-                m3 = 1
-            else:
-                m3 = 0
-
-        matrice_corrigee.append([m1, m2, m3, m4])
-
-    return matrice_corrigee
+    decoded_data = reed_solomon_decode(encoded_data, n, k)
+    print("Données décodées :", decoded_data)
