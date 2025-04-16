@@ -1,5 +1,9 @@
+######## IMPORTS #########
+
 from PIL import Image, ImageDraw
 import reedsolo
+
+######## FUNCTIONS #########
 
 def dessineQR(qr_code: list,taille : int = 10 )-> None: 
     '''
@@ -34,10 +38,10 @@ QR_Code = [[None for i in range(25)]for i in range(25)]
 
 
 
-def patternFixe(qr_code):
-  """
-  Place tout les patternes fixe mais également place les bits de format qui ne change jamais avec l'utilisation du masque 001 et tu correction d'erreur L (11)
-  """
+def patternFixe(qr_code : list) -> None:
+    """
+    Place tout les patternes fixe mais également place les bits de format qui ne change jamais avec l'utilisation du masque 001 et tu correction d'erreur L (11)
+    """
     for i in range(8):
         for j in range(8):
             qr_code[i][j] = 0
@@ -96,9 +100,9 @@ def patternFixe(qr_code):
     
     return
 
-QR_Code = patternFixe(QR_Code)
 
-def placeBits(qr_code,message):
+
+def placeBits(qr_code : list,message : str) -> None:
     """
     Place les bits sur la liste en alternant toutes les deux colonnes en démarrant de la droi
     """
@@ -135,10 +139,10 @@ def placeBits(qr_code,message):
     
                     
 
-def encodement(code):
-  """
-  Génère les 272 bits de donnés a partir du texte donné.
-  """
+def encodement(code : str) -> str :
+    """
+    Génère les 272 bits de donnés a partir du texte donné.
+    """
     def lettrebinaire(lettre):
         binaire = str(bin(ord(lettre)))[2:]
         for i in range(8-len(binaire)):
@@ -158,10 +162,10 @@ def encodement(code):
         liste[0], liste[1] = liste[1], liste[0]
     return binaire
 
-def genereCorrectionErreur(data_bits):
-  """
-  Génère les 80 bits de correction d'érreur en utilisant l'algorithme Reed-Solomon.
-  """
+def genereCorrectionErreur(data_bits : str) -> str:
+    """
+    Génère les 80 bits de correction d'érreur en utilisant l'algorithme Reed-Solomon.
+    """
     data_bytes = [int(data_bits[i:i+8],2) for i in range(0,len(data_bits),8)]
 
     rs = reedsolo.RSCodec(10)
@@ -175,9 +179,9 @@ def genereCorrectionErreur(data_bits):
 
 
         
-    
+######## MAIN #########
 
-
+patternFixe(QR_Code)
 placeBits(QR_Code,encodement("Ceci est un test"))
 placeBits(QR_Code,genereCorrectionErreur(encodement("Ceci est un test")))
 dessineQR(QR_Code)
