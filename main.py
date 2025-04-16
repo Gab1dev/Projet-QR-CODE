@@ -1,9 +1,12 @@
 ######## IMPORTS #########
 
+
 from PIL import Image, ImageDraw
 import reedsolo
 
+
 ######## FUNCTIONS #########
+
 
 def dessineQR(qr_code: list,taille : int = 10 )-> None: 
     '''
@@ -34,8 +37,8 @@ def dessineQR(qr_code: list,taille : int = 10 )-> None:
     img.show()
     img.save('test.png')
 
-QR_Code = [[None for i in range(25)]for i in range(25)]
 
+####################################################################################################################                
 
 
 def patternFixe(qr_code : list) -> None:
@@ -101,6 +104,8 @@ def patternFixe(qr_code : list) -> None:
     return
 
 
+####################################################################################################################                
+
 
 def placeBits(qr_code : list,message : str) -> None:
     """
@@ -137,7 +142,7 @@ def placeBits(qr_code : list,message : str) -> None:
             col -= 1
     return
     
-                    
+####################################################################################################################                
 
 def encodement(code : str) -> str :
     """
@@ -176,11 +181,11 @@ def genereCorrectionErreur(data_bits : str) -> str:
     print(len(ec_bits))
     return ec_bits
 
-
-
         
 ######## MAIN #########
 
+
+QR_Code = [[None for i in range(25)]for i in range(25)]
 patternFixe(QR_Code)
 placeBits(QR_Code,encodement("Ceci est un test"))
 placeBits(QR_Code,genereCorrectionErreur(encodement("Ceci est un test")))
