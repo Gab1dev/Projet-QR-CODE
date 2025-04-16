@@ -1,43 +1,3 @@
-
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
-
-from PIL import Image, ImageDraw
-import reedsolo
-
-def dessineQR(qr_code: list,taille : int = 10 )-> None: 
-    '''
-    Parameters
-    ----------
-    qr_code : list[list[int]]
-        La liste contenant chaque case du QR Code
-    taille : int
-        La taille du QR Code, taille 1 correspond a 21*21 et on multiplie par la taille. The default is 10.
-
-    Returns
-    -------
-    None.
-
-    '''
-    img_taille = taille*25
-    img = Image.new('RGB',(img_taille,img_taille), color="white")
-    image = ImageDraw.Draw(img)
-    
-    
-    for i in range(len(qr_code)):
-        for j in range(len(qr_code[0])):
-            if qr_code[i][j]:
-                image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'black')
-            else:
-                image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'white')
-                
-    img.show()
-    img.save('test.png')
-
 QR_Code = [[None for i in range(25)]for i in range(25)]
 
 
@@ -222,6 +182,3 @@ def placeCorrectionErreurBits(qr_code,data_bits):
 placeBits(QR_Code,encodement("bonjour"))
 
 placeCorrectionErreurBits(QR_Code,encodement("bonjour"))
-
-dessineQR(QR_Code,10)                
-# Problemes : Correction Erreur et Ligne de format.
