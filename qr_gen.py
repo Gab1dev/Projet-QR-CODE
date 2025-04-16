@@ -64,31 +64,6 @@ def patternFixe(qr_code):
 QR_Code = patternFixe(QR_Code)
 
 def placeBits(qr_code,message):
-    """
-    colonne = 24
-    ligne = 24
-    direction = -1
-    count = 0
-    while count < 272:
-        for i in [0,1]:
-                if qr_code[ligne][colonne-i] is None:
-                    qr_code[ligne][colonne-i] = int(message[count])
-                    count += 1
-                    
-        ligne += direction
-        if ligne == 25:
-            colonne -= 2
-            ligne = 0
-            direction = -1
-        if ligne == -1:
-            direction = 1
-            ligne = 0
-            colonne -= 2
-        
-                
-                        
-    return qr_code
-    """
     size = 25
     index = 0
     direction = -1
@@ -112,6 +87,9 @@ def placeBits(qr_code,message):
         direction *= -1
         row += direction
         col -= 2
+        if col == 6:
+            col -= 1
+    return
                     
 
 def encodement(code):
