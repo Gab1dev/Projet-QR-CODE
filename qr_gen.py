@@ -1,8 +1,40 @@
-QR_Code = [[None for i in range(25)]for i in range(25)]
+def dessineQR(qr_code: list,taille : int = 10 )-> None: 
+    '''
+    Parameters
+    ----------
+    qr_code : list[list[int]]
+        La liste contenant chaque case du QR Code
+    taille : int
+        La taille du QR Code, taille 1 correspond a 25*25 et on multiplie par la taille. The default is 10.
+
+    Returns
+    -------
+    L'image du QRCode qui s'affiche automatiquement.
+
+    '''
+    img_taille = taille*25
+    img = Image.new('RGB',(img_taille,img_taille), color="white")
+    image = ImageDraw.Draw(img)
+    
+    
+    for i in range(len(qr_code)):
+        for j in range(len(qr_code[0])):
+            if qr_code[i][j]:
+                image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'black')
+            else:
+                image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'white')
+                
+    img.show()
+    img.save('test.png')
 
 
+####################################################################################################################                
 
-def patternFixe(qr_code):
+
+def patternFixe(qr_code : list) -> None:
+    """
+    Place tout les patternes fixe mais également place les bits de format qui ne change jamais avec l'utilisation du masque 001 et tu correction d'erreur L (11)
+    """
     for i in range(8):
         for j in range(8):
             qr_code[i][j] = 0
@@ -36,7 +68,7 @@ def patternFixe(qr_code):
     placePatternFinder(25-7, 0)
     placePatternFinder(0, 25-7)
     placePatternTiming()
-    format_line = '010011011100001'
+    format_line = '110011110100111'
     line = 0
     for k in range(len(format_line)):
         
@@ -59,11 +91,16 @@ def patternFixe(qr_code):
         
         
     
-    return qr_code
+    return
 
-QR_Code = patternFixe(QR_Code)
 
-def placeBits(qr_code,message):
+####################################################################################################################                
+
+
+def placeBits(qr_code : list,message : str) -> None:
+    """
+    Place les bits sur la liste en alternant toutes les deux colonnes en démarrant de la droi
+    """
     size = 25
     index = 0
     direction = -1
@@ -82,6 +119,10 @@ def placeBits(qr_code,message):
                         qr_code[ligne][colonne] = int(message[index])
                     index += 1
                     if index == len(message):
+                        qr_code[16][0] = 1
+                        qr_code[16][1] = 1
+                        qr_code[14][0] = 1
+                        qr_code[14][1] = 1
                         return
             row += direction
         direction *= -1
@@ -90,9 +131,13 @@ def placeBits(qr_code,message):
         if col == 6:
             col -= 1
     return
-                    
+    
+####################################################################################################################                
 
-def encodement(code):
+def encodement(code : str) -> str :
+    """
+    Génère les 272 bits de donnés a partir du texte donné.
+    """
     def lettrebinaire(lettre):
         binaire = str(bin(ord(lettre)))[2:]
         for i in range(8-len(binaire)):
@@ -112,7 +157,10 @@ def encodement(code):
         liste[0], liste[1] = liste[1], liste[0]
     return binaire
 
-def genereCorrectionErreur(data_bits):
+def genereCorrectionErreur(data_bits : str) -> str:
+    """
+    Génère les 80 bits de correction d'érreur en utilisant l'algorithme Reed-Solomon.
+    """
     data_bytes = [int(data_bits[i:i+8],2) for i in range(0,len(data_bits),8)]
 
     rs = reedsolo.RSCodec(10)
@@ -123,11 +171,12 @@ def genereCorrectionErreur(data_bits):
     print(len(ec_bits))
     return ec_bits
 
-
         
-    
+######## MAIN #########
 
 
-placeBits(QR_Code,encodement("bonjour"))
-
-placeBits(QR_Code,genereCorrectionErreur(encodement("bonjour")))
+QR_Code = [[None for i in range(25)]for i in range(25)]
+patternFixe(QR_Code)
+placeBits(QR_Code,encodement("Ceci est un test"))
+placeBits(QR_Code,genereCorrectionErreur(encodement("Ceci est un test")))
+dessineQR(QR_Code)
