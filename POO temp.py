@@ -31,6 +31,7 @@ class QR_Code :
         self.correction_erreur = [10,15,20,26][version-2]
         self.positive = positive
         self.negative = negative
+        
     def patternFixe(self):
        
         """
@@ -94,7 +95,7 @@ class QR_Code :
 
     def placeBits(self,code : str) -> None:
         """
-        Place les bits sur la liste en alternant toutes les deux colonnes en démarrant de la droi
+        Place les bits sur la liste en alternant toutes les deux colonnes en démarrant de la droite
         """
         def encodement(code : str) -> str :
             """
@@ -121,7 +122,7 @@ class QR_Code :
 
         def genereCorrectionErreur(data_bits : str) -> str:
             """
-            Génère les 80 bits de correction d'érreur en utilisant l'algorithme Reed-Solomon.
+            Génère les bits de correction d'érreur en utilisant l'algorithme Reed-Solomon.
             """
             data_bytes = [int(data_bits[i:i+8],2) for i in range(0,len(data_bits),8)]
 
@@ -169,17 +170,7 @@ class QR_Code :
 
     def dessineQR(self)-> None: 
         '''
-        Parameters
-        ----------
-        self.liste : list[list[int]]
-            La liste contenant chaque case du QR Code
-        taille : int
-            La taille du QR Code, taille 1 correspond a 25*25 et on multiplie par la taille. The default is 10.
-        
-        Returns
-        -------
         L'image du QRCode qui s'affiche automatiquement.
-
         '''
         self.patternFixe()
         self.placeBits(self.message)
