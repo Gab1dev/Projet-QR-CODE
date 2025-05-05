@@ -1,9 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon May  5 15:19:28 2025
+
+@author: alessandr.frecina
+"""
+
 import reedsolo
 from PIL import Image, ImageDraw
 from datetime import *
 
 class QR_Code :
-    def __init__(self,message = "bonjour",version = None):
+    def __init__(self,message = "bonjour",version = None, negative = "black", positive = "white"):
         if version == None:
             if len(message) < (272-16)//8:
                 version = 2
@@ -22,7 +29,8 @@ class QR_Code :
         self.message = message
         self.nombre_de_bits = [272,440,640,864][version-2]
         self.correction_erreur = [10,15,20,26][version-2]
-        
+        self.positive = positive
+        self.negative = negative
     def patternFixe(self):
        
         """
@@ -184,11 +192,12 @@ class QR_Code :
         for i in range(len(self.liste)):
             for j in range(len(self.liste[0])):
                 if self.liste[i][j]:
-                    image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'black')
+                    image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.negative)
                 else:
-                    image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],'white')
-                
+                    image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.positive)
+        
+        
         img.show()
         img.save(f'QR_Code ' + datetime.today().strftime('%Y-%m-%d %Hh%M') + '.png')
 
-QR_Code("http://localhost:8888/notebooks/Downloads/Untitled.ipynb").dessineQR()
+QR_Code("Coucou",None,negative,positive).dessineQR()
