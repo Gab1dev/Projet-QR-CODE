@@ -190,5 +190,3 @@ class QR_Code :
         
         img.show()
         img.save(f'QR_Code ' + datetime.today().strftime('%Y-%m-%d %Hh%M') + '.png')
-
-QR_Code("Coucou",None,negative,positive).dessineQR()
