@@ -251,3 +251,6 @@ Label(root,text="",bg="gray").pack()
 Button(root,text = "Génère QR",command = genere_qr).pack()
 
 root.mainloop()
+
+
+# 010101001110010
