@@ -1,13 +1,23 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon May  5 15:19:28 2025
+07/05/2025
 
-@author: alessandr.frecina
+Auteur : Gabin BLANC, Alessandro FRECINA
 """
 
+
+############## IMPORTS #################
+
+from tkinter import *  
+from tkinter import filedialog
 import reedsolo
 from PIL import Image, ImageDraw
 from datetime import *
+
+########### GLOBAL VAR ##################
+
+FICHIER = ""
+
+############ QR GENERATION ################
 
 class QR_Code :
     def __init__(self,message = "bonjour",version = None, negative = "black", positive = "white"):
@@ -22,16 +32,15 @@ class QR_Code :
                 version = 5
             else:
                 raise ValueError("Le message est trop long.")
-                
+
+        self.nombre_de_bits = [272,440,640,864][version-2]
+        self.correction_erreur = [10,15,20,26][version-2]
         self.size = [25,29,33,37][version-2]
         self.liste = [[None for i in range(self.size)]for j in range(self.size)]
         self.version = version
         self.message = message
-        self.nombre_de_bits = [272,440,640,864][version-2]
-        self.correction_erreur = [10,15,20,26][version-2]
         self.positive = positive
         self.negative = negative
-        
     def patternFixe(self):
        
         """
@@ -95,7 +104,7 @@ class QR_Code :
 
     def placeBits(self,code : str) -> None:
         """
-        Place les bits sur la liste en alternant toutes les deux colonnes en démarrant de la droite
+        Place les bits sur la liste en alternant toutes les deux colonnes en démarrant de la droi
         """
         def encodement(code : str) -> str :
             """
@@ -122,7 +131,7 @@ class QR_Code :
 
         def genereCorrectionErreur(data_bits : str) -> str:
             """
-            Génère les bits de correction d'érreur en utilisant l'algorithme Reed-Solomon.
+            Génère les 80 bits de correction d'érreur en utilisant l'algorithme Reed-Solomon.
             """
             data_bytes = [int(data_bits[i:i+8],2) for i in range(0,len(data_bits),8)]
 
@@ -169,24 +178,119 @@ class QR_Code :
         return
 
     def dessineQR(self)-> None: 
+        global FICHIER
         '''
+        Parameters
+        ----------
+        self.liste : list[list[int]]
+            La liste contenant chaque case du QR Code
+        taille : int
+            La taille du QR Code, taille 1 correspond a 25*25 et on multiplie par la taille. The default is 10.
+        
+        Returns
+        -------
         L'image du QRCode qui s'affiche automatiquement.
+
         '''
         self.patternFixe()
         self.placeBits(self.message)
         taille = 10
         img_taille = 10*self.size
-        img = Image.new('RGB',(img_taille,img_taille), color="white")
+        img = Image.new('RGBA',(img_taille,img_taille), color=(0,0,0,0))
         image = ImageDraw.Draw(img)
-    
+        
+        Fichier = False
+        if FICHIER != "":
+            Fichier = True
+            FICHIER = Image.open(FICHIER)
+            FICHIER = FICHIER.resize((img_taille,img_taille))
+            img.paste(FICHIER)
     
         for i in range(len(self.liste)):
             for j in range(len(self.liste[0])):
-                if self.liste[i][j]:
-                    image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.negative)
+                if Fichier:
+                    if self.liste[i][j]:
+                        image.rectangle([(j*taille,i*taille),((j+1)*taille-3),(i+1)*taille-3],self.negative)
+                    else:
+                        image.rectangle([(j*taille,i*taille),((j+1)*taille-3),(i+1)*taille-3],self.positive)
                 else:
-                    image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.positive)
+                    if self.liste[i][j]:
+                        image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.negative)
+                    else:
+                        image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.positive)
+
         
+        pic = Image.new("RGBA",(img_taille+40,img_taille+40),color=(0,0,0,0))
+
+        pic.paste(img,(20,20))
+        pic.show()
+        pic.save(f'QR_Code ' + datetime.today().strftime('%Y-%m-%d %Hh%M') + '.png')
+
+
+############ TKINTER ##################
         
-        img.show()
-        img.save(f'QR_Code ' + datetime.today().strftime('%Y-%m-%d %Hh%M') + '.png')
+root = Tk()  
+root.geometry("300x500")
+root.resizable(False,False)  
+root['bg'] = 'gray'
+root.title("QR Code GEN")
+
+
+def genereQR():
+    global FICHIER
+    global lbl_genere
+    negative={'Rouge' : 'darkred', "Bleu" : 'darkblue', "Noir" : "black", "Violet": "indigo"}[couleur_sombre.get()]
+    positive={'Orange' : 'orange', "Jaune" : 'yellow', "Blanc" : "white", "Vert" : "lime", "Cyan" : "aqua"}[couleur_claire.get()]
+    texte = T.get("1.0","end-1c")
+    try:
+        QR_Code(texte, None, negative, positive).dessineQR()
+    except ValueError as e:
+        lbl_genere.config(text='Le message est trop long')
+        
+
+def fichierImage():
+    global FICHIER
+    global lbl_image
+    FICHIER = filedialog.askopenfilename()
+    if FICHIER[-3:].lower() != "png":
+        lbl8.config(text="Le fichier n'est pas une image")
+        FICHIER = ""
+    else:
+        lbl_image.config(text="L'image a bien été mise")
+
+def removeImage():
+    global FICHIER
+    global lbl_image
+    FICHIER = ""
+    lbl_image.config(text="L'image a été retirée")
+
+T = Text(root,height = 3,width = 30)
+couleurs_noir = ["Noir","Bleu","Rouge","Violet"]
+couleurs_blanc = ["Orange","Jaune","Blanc","Vert","Cyan"]
+Label(root,text="Générateur de QR Code",font=("Helvetica",16),bg="gray").pack()
+Label(root,text="",bg="gray").pack()
+Label(root,text="",bg="gray").pack()
+Label(root,text = "Couleurs des pixels noirs",bg="gray").pack()
+couleur_sombre = StringVar(value="Noir")
+OptionMenu(root,couleur_sombre, *couleurs_noir).pack()
+Label(root,text="",bg="gray").pack()
+Label(root,text="",bg="gray").pack()
+Label(root,text = "Couleurs des pixels blancs",bg="gray").pack()
+couleur_claire = StringVar(value="Blanc")
+OptionMenu(root,couleur_claire, *couleurs_blanc).pack()
+Label(root,text="",bg="gray").pack()
+Label(root,text="",bg="gray").pack()
+Label(root,text = "Message du QR Code",bg="gray").pack()
+T.pack()
+Label(root,text="",bg="gray").pack()
+Button(root,text = "Ajouter Image de fond",command = fichierImage).pack()
+Button(root,text = "Retirer L'image",command = removeImage).pack()
+lbl_image  = Label(root,text="",bg="gray")
+lbl_image.pack()
+Label(root,text="",bg="gray").pack()
+Button(root,text = "Génère QR",command = genereQR).pack()
+lbl_genere = Label(root,text="",bg="gray")
+lbl_genere.pack()
+
+
+root.mainloop()
