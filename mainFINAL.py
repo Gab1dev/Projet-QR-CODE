@@ -1,3 +1,4 @@
+
 """
 07/05/2025
 
@@ -221,15 +222,12 @@ class QR_Code :
 
 
 ############ TKINTER ##################
-        
-root = Tk()  
-root.geometry("300x500")
-root.resizable(False,False)  
-root['bg'] = 'gray'
-root.title("QR Code GEN")
-
+    
 
 def genereQR():
+    """
+    Fonction qui permet en appuyant sur le boutton "Génère QR" de parler a la classe QR_Code pour afficher le QR Code
+    """
     global FICHIER
     global lbl_genere
     negative={'Rouge' : 'darkred', "Bleu" : 'darkblue', "Noir" : "black", "Violet": "indigo"}[couleur_sombre.get()]
@@ -238,10 +236,15 @@ def genereQR():
     try:
         QR_Code(texte, None, negative, positive).dessineQR()
     except ValueError as e:
+        # Si on renvoie une erreur alors le message est forcément trop long avec le raise(ValueError) a la ligne 35
         lbl_genere.config(text='Le message est trop long')
         
 
 def fichierImage():
+    """
+    Fonction qui permet a l'utilisateur de choisir un fichier et vérifie si ce fichier est une image en .png
+    Met le chemin du fichier dans la variable globale FICHIER
+    """
     global FICHIER
     global lbl_image
     FICHIER = filedialog.askopenfilename()
@@ -252,38 +255,53 @@ def fichierImage():
         lbl_image.config(text="L'image a bien été mise")
 
 def removeImage():
+    """
+    Permet de remettre a 0 la variable globale FICHIER
+    """
     global FICHIER
     global lbl_image
     FICHIER = ""
     lbl_image.config(text="L'image a été retirée")
 
-T = Text(root,height = 3,width = 30)
-couleurs_noir = ["Noir","Bleu","Rouge","Violet"]
-couleurs_blanc = ["Orange","Jaune","Blanc","Vert","Cyan"]
-Label(root,text="Générateur de QR Code",font=("Helvetica",16),bg="gray").pack()
-Label(root,text="",bg="gray").pack()
-Label(root,text="",bg="gray").pack()
-Label(root,text = "Couleurs des pixels noirs",bg="gray").pack()
-couleur_sombre = StringVar(value="Noir")
-OptionMenu(root,couleur_sombre, *couleurs_noir).pack()
-Label(root,text="",bg="gray").pack()
-Label(root,text="",bg="gray").pack()
-Label(root,text = "Couleurs des pixels blancs",bg="gray").pack()
-couleur_claire = StringVar(value="Blanc")
-OptionMenu(root,couleur_claire, *couleurs_blanc).pack()
-Label(root,text="",bg="gray").pack()
-Label(root,text="",bg="gray").pack()
-Label(root,text = "Message du QR Code",bg="gray").pack()
-T.pack()
-Label(root,text="",bg="gray").pack()
-Button(root,text = "Ajouter Image de fond",command = fichierImage).pack()
-Button(root,text = "Retirer L'image",command = removeImage).pack()
-lbl_image  = Label(root,text="",bg="gray")
-lbl_image.pack()
-Label(root,text="",bg="gray").pack()
-Button(root,text = "Génère QR",command = genereQR).pack()
-lbl_genere = Label(root,text="",bg="gray")
-lbl_genere.pack()
+if __name__ == "__main__":
 
+    # On met la fenettre a la bonne taille en mettant egalement un fond gris et enlevant le fait de pouvoir la changer de taille.
+    root = Tk()  
+    root.geometry("300x500")
+    root.resizable(False,False)  
+    root['bg'] = 'gray'
+    root.title("QR Code GEN")
+    # root.iconbitmap("QR_Code.ico"), Utilisant Jupyter on n'a pas réussi a faire en sorte que le programme utilise l'icône
 
-root.mainloop()
+    
+    # On défini les couleurs choisissable par l'utilisateur.
+    couleurs_noir = ["Noir","Bleu","Rouge","Violet"]
+    couleurs_blanc = ["Orange","Jaune","Blanc","Vert","Cyan"]
+
+    # On créer la mise en page avec les différents boutton et le champ de texte a remplir.
+    Label(root,text="Générateur de QR Code",font=("Helvetica",16),bg="gray").pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text = "Couleurs des pixels noirs",bg="gray").pack()
+    couleur_sombre = StringVar(value="Noir")
+    OptionMenu(root,couleur_sombre, *couleurs_noir).pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text = "Couleurs des pixels blancs",bg="gray").pack()
+    couleur_claire = StringVar(value="Blanc")
+    OptionMenu(root,couleur_claire, *couleurs_blanc).pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text = "Message du QR Code",bg="gray").pack()
+    Text(root,height = 3,width = 30).pack()
+    Label(root,text="",bg="gray").pack()
+    Button(root,text = "Ajouter Image de fond",command = fichierImage).pack()
+    Button(root,text = "Retirer L'image",command = removeImage).pack()
+    lbl_image  = Label(root,text="",bg="gray")
+    lbl_image.pack()
+    Label(root,text="",bg="gray").pack()
+    Button(root,text = "Génère QR",command = genereQR).pack()
+    lbl_genere = Label(root,text="",bg="gray")
+    lbl_genere.pack()
+
+    root.mainloop()
