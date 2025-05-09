@@ -214,7 +214,7 @@ class QR_Code :
                         image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.positive)
 
         
-        pic = Image.new("RGBA",(img_taille+40,img_taille+40),color=(0,0,0,0))
+        pic = Image.new("RGBA",(img_taille+40,img_taille+40),color="white")
 
         pic.paste(img,(20,20))
         pic.show()
@@ -230,11 +230,13 @@ def genereQR():
     """
     global FICHIER
     global lbl_genere
-    negative={'Rouge' : 'darkred', "Bleu" : 'darkblue', "Noir" : "black", "Violet": "indigo"}[couleur_sombre.get()]
-    positive={'Orange' : 'orange', "Jaune" : 'yellow', "Blanc" : "white", "Vert" : "lime", "Cyan" : "aqua", "Rose" : "violet"}[couleur_claire.get()]
+    positive={'Orange' : 'orange', "Jaune" : 'yellow', "Blanc" : "white", "Vert" : "lime", "Cyan" : "aqua","Rose" : "violet"}[couleur_claire.get()]
+    negative={'Rouge' : 'darkred', "Bleu" : 'navy', "Noir" : "black", "Violet": "indigo"}[couleur_sombre.get()]
     texte = T.get("1.0","end-1c")
     try:
         QR_Code(texte, None, negative, positive).dessineQR()
+        FICHIER = ""
+        lbl_image.config(text="")
     except ValueError as e:
         # Si on renvoie une erreur alors le message est forcément trop long avec le raise(ValueError) a la ligne 35
         lbl_genere.config(text='Le message est trop long')
@@ -276,7 +278,7 @@ if __name__ == "__main__":
     
     # On défini les couleurs choisissable par l'utilisateur.
     couleurs_noir = ["Noir","Bleu","Rouge","Violet"]
-    couleurs_blanc = ["Orange","Jaune","Blanc","Vert","Cyan","Rose"]
+    couleurs_blanc = ["Orange","Jaune","Blanc","Vert","Cyan", "Rose"]
 
     # On créer la mise en page avec les différents boutton et le champ de texte a remplir.
     Label(root,text="Générateur de QR Code",font=("Helvetica",16),bg="gray").pack()
