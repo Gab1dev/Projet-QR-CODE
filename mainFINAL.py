@@ -1,4 +1,3 @@
-
 """
 07/05/2025
 
@@ -21,7 +20,7 @@ FICHIER = ""
 ############ QR GENERATION ################
 
 class QR_Code :
-    def __init__(self,message : str,version = None, negative = "black", positive = "white") -> None:
+    def __init__(self,message : str,version = None, negative = "black", positive = "white", bordure = "white") -> None:
         if version == None:
             if len(message) < (272-16)//8:
                 version = 2
@@ -42,6 +41,7 @@ class QR_Code :
         self.message = message
         self.positive = positive
         self.negative = negative
+        self.border = bordure
     def patternFixe(self):
        
         """
@@ -213,6 +213,10 @@ class QR_Code :
                     else:
                         image.rectangle([(j*taille,i*taille),((j+1)*taille),(i+1)*taille],self.positive)
 
+        image.line([(0,0),(0,img_taille-1)],fill=self.border)
+        image.line([(0,img_taille-1),(img_taille-1,img_taille-1)],fill=self.border)    
+        image.line([(0,0),(img_taille-1,0)],fill=self.border)    
+        image.line([(img_taille-1,0),(img_taille-1,img_taille-1)],fill=self.border)    
         
         pic = Image.new("RGBA",(img_taille+40,img_taille+40),color="white")
 
@@ -230,11 +234,12 @@ def genereQR():
     """
     global FICHIER
     global lbl_genere
+    bordure = {'Orange' : 'orange', "Jaune" : 'yellow', "Blanc" : "white", "Vert" : "lime", "Bleu Clair" : "cornflowerblue","Rose" : "violet",'Rouge' : 'darkred', "Bleu" : 'navy', "Noir" : "black", "Violet": "indigo","Vert Foncé": "darkgreen"}[border.get()]
     positive={'Orange' : 'orange', "Jaune" : 'yellow', "Blanc" : "white", "Vert" : "lime", "Bleu Clair" : "cornflowerblue","Rose" : "violet"}[couleur_claire.get()]
     negative={'Rouge' : 'darkred', "Bleu" : 'navy', "Noir" : "black", "Violet": "indigo","Vert Foncé": "darkgreen"}[couleur_sombre.get()]
     texte = T.get("1.0","end-1c")
     try:
-        QR_Code(texte, None, negative, positive).dessineQR()
+        QR_Code(texte, None, negative, positive,bordure).dessineQR()
         FICHIER = ""
         lbl_image.config(text="")
     except ValueError as e:
@@ -269,7 +274,7 @@ if __name__ == "__main__":
 
     # On met la fenettre a la bonne taille en mettant egalement un fond gris et enlevant le fait de pouvoir la changer de taille.
     root = Tk()  
-    root.geometry("300x500")
+    root.geometry("300x610")
     root.resizable(False,False)  
     root['bg'] = 'gray'
     root.title("QR Code GEN")
@@ -279,7 +284,7 @@ if __name__ == "__main__":
     # On défini les couleurs choisissable par l'utilisateur.
     couleurs_noir = ["Noir","Bleu","Rouge","Violet", "Vert Foncé"]
     couleurs_blanc = ["Orange","Jaune","Blanc","Vert","Bleu Clair", "Rose"]
-
+    couleur_bordure = couleurs_noir+couleurs_blanc
     # On créer la mise en page avec les différents boutton et le champ de texte a remplir.
     Label(root,text="Générateur de QR Code",font=("Helvetica",16),bg="gray").pack()
     Label(root,text="",bg="gray").pack()
@@ -292,6 +297,11 @@ if __name__ == "__main__":
     Label(root,text = "Couleurs des pixels blancs",bg="gray").pack()
     couleur_claire = StringVar(value="Blanc")
     OptionMenu(root,couleur_claire, *couleurs_blanc).pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text="",bg="gray").pack()
+    Label(root,text = "Couleurs de la bordure",bg="gray").pack()
+    border = StringVar(value="Blanc")
+    OptionMenu(root,border, *couleur_bordure).pack()
     Label(root,text="",bg="gray").pack()
     Label(root,text="",bg="gray").pack()
     Label(root,text = "Message du QR Code",bg="gray").pack()
