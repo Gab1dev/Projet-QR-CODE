@@ -231,7 +231,7 @@ def genereQR():
     global FICHIER
     global lbl_genere
     positive={'Orange' : 'orange', "Jaune" : 'yellow', "Blanc" : "white", "Vert" : "lime", "Bleu Clair" : "cornflowerblue","Rose" : "violet"}[couleur_claire.get()]
-    negative={'Rouge' : 'darkred', "Bleu" : 'navy', "Noir" : "black", "Violet": "indigo"}[couleur_sombre.get()]
+    negative={'Rouge' : 'darkred', "Bleu" : 'navy', "Noir" : "black", "Violet": "indigo","Vert Foncé": "darkgreen"}[couleur_sombre.get()]
     texte = T.get("1.0","end-1c")
     try:
         QR_Code(texte, None, negative, positive).dessineQR()
@@ -277,7 +277,7 @@ if __name__ == "__main__":
 
     
     # On défini les couleurs choisissable par l'utilisateur.
-    couleurs_noir = ["Noir","Bleu","Rouge","Violet"]
+    couleurs_noir = ["Noir","Bleu","Rouge","Violet", "Vert Foncé"]
     couleurs_blanc = ["Orange","Jaune","Blanc","Vert","Bleu Clair", "Rose"]
 
     # On créer la mise en page avec les différents boutton et le champ de texte a remplir.
