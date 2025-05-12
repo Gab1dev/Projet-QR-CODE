@@ -21,7 +21,7 @@ FICHIER = ""
 ############ QR GENERATION ################
 
 class QR_Code :
-    def __init__(self,message,version = None, negative = "black", positive = "white"):
+    def __init__(self,message : str,version = None, negative = "black", positive = "white") -> None:
         if version == None:
             if len(message) < (272-16)//8:
                 version = 2
